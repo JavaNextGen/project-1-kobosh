@@ -15,6 +15,9 @@ package com.revature.models;
  *
  */
 public class User extends AbstractUser {
+	private String   fname  ;
+	private String   lname  ;
+	private String    email  ;
 
     public User() {
         super();
@@ -24,7 +27,52 @@ public class User extends AbstractUser {
      * This includes the minimum parameters needed for the {@link com.revature.models.AbstractUser} class.
      * If other fields are needed, please create additional constructors.
      */
-    public User(int id, String username, String password, Role role) {
-        super(id, username, password, role);
+    public User(int id, String username, String password, Role role)
+    {
+        super(id,username, password, role);
     }
+    public User(int id, String username, String password, String fnm,String lnm, String eml,Role role)
+    {
+        super(id,username, password, role);
+        this.fname=fnm;
+        this.lname=lnm;
+        this.email=eml;
+    }
+
+	public String getFname() {
+		return fname;
+	}
+
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
+
+	public String getLname() {
+		return lname;
+	}
+
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	 @Override
+	    public String toString() {
+	        return "AbstractUser{" +
+	                "id=" + super.getId() +
+	                ", username='" + super.getUsername() + '\'' +
+	                ", password='" +super.getPassword() + '\'' +
+	                
+	                ", f_name "+ this.fname + '\'' +
+	                 ", l_name "+ this.lname + '\'' +
+	                  ", f_name "+ this.email + '\'' +
+	                  ", role=" + super.getRole() +
+	                '}';
+	    }
 }

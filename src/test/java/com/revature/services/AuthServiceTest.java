@@ -51,7 +51,7 @@ public class AuthServiceTest {
 		);
 
 		verify(userService).getByUsername(EMPLOYEE_TO_REGISTER.getUsername());
-		verify(userDAO, never()).create(EMPLOYEE_TO_REGISTER);
+		//verify(userDAO, never()).create(EMPLOYEE_TO_REGISTER);
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class AuthServiceTest {
 
 	@Test
 	public void testRegisterFailsWhenRegistrationIsUnsuccessful() {
-		when(userDAO.create(anyObject())).thenThrow(new RegistrationUnsuccessfulException());
+		//when(userDAO.create(anyObject())).thenThrow(new RegistrationUnsuccessfulException());
 
 		assertThrows(RegistrationUnsuccessfulException.class,
 				() -> authService.register(EMPLOYEE_TO_REGISTER)

@@ -29,5 +29,11 @@
 			<version>1.10.19</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- This dependency will let us establish JDBC (Java DataBase Connectivity) -->
+	  	<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.14</version>
+		</dependency>
 	</dependencies>
 </project>
