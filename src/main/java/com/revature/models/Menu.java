@@ -10,12 +10,39 @@ import com.revature.services.UserService;
 
 //This Menu Class will have a displayMenu() method that displays the menu to the user and lets them interact with it
 //The menu will make use of the Scanner class to take user inputs in order to travel through the menu options.
-public class Menu {
+public class Menu
+{
+	
+	User loginUser=null;
+	
+	
+	
+	
+	
+	  User login()
+	{
+		String unm=null;
+		String pwd=null;
+		Scanner scan=new Scanner(System.in);
+		System.out.println(" user name ?");
+		unm=scan.nextLine();
+		System.out.println(" password?");
+		pwd=scan.nextLine();
+	
+		
+		
+		UserService us=new UserService();
+	User  success=us.login(unm,pwd);
+		//System.out.println(success);
+		//scan.close();
+		return success;
+	}
 
 	//EmployeeDAO eDAO = new EmployeeDAO(); //we need this object to use methods from EmployeeDAO
 	
 	//All of the menu display options and control flow are contained within this method
-	public void displayMenu() {
+	public void displayMenu()
+	{
 		
 		boolean displayMenu = true; //we're going to use this to toggle whether the menu continues after user input
 		Scanner scan = new Scanner(System.in); //Scanner object to parse (take) user input
@@ -28,28 +55,54 @@ public class Menu {
 		
 		//display the menu as long as the displayMenu boolean == true
 		//this is going to hold and display all my menu options until displayMenu == false
-		while(displayMenu) { 
-			
+		while(displayMenu) 
+		{ 
+			while(loginUser== null)
+			{
+				System.out.println(" have to Login ");
+				loginUser=login();
+				
+				
+			}
+			System.out.println(" welcome " + loginUser.getFname() );
+			System.out.println("==============================================================");
 			//menu options
-			System.out.println("hi -> get greeted");
+			//System.out.println("hi -> get greeted");
 			System.out.println("users -> show all users");
 			System.out.println("usersbyid -> get users with a certain ID");
 			System.out.println("usersbyname -> get users with a certain user name");
 			System.out.println("create -> insert user into database");
 			System.out.println("exit -> exit the application");
 			
-			
 			//parse user input after they choose a menu option, and put it into a String variable
 			String input = scan.nextLine();
 			
 			//switch statement that takes the user input and executes the appropriate code
 			//BEN MAY ADD MORE COMMENTS HERE ONCE WE DO DATABASE CONNECTIVITY
-			switch(input) {
+			switch(input)
+			{
 			
-			case "hi": {
-				System.out.println("Hello there.");
-				break; //we need a break in each case block, or else all the other cases will still run
-			}
+			/*case "hi": {
+				
+				loginUser=login();
+				System.out.println(loginUser.getRole());
+				System.out.println("log in");
+				String unm=null;
+				String pwd=null;
+				
+				System.out.println(" user name ?");
+				unm=scan.nextLine();
+				System.out.println(" password?");
+				pwd=scan.nextLine();
+				scan.nextLine();
+				
+				System.out.println();
+				
+				UserService us=new UserService();
+			User  loginUser=us.login(unm,pwd);
+				System.out.println(loginUser);
+				//break; //we need a break in each case block, or else all the other cases will still run
+			} */
 			case "create": {
 				System.out.println("inserting user ");
 				System.out.println("enter  user name ");
@@ -110,6 +163,7 @@ public class Menu {
 			}
 			case "exit": {
 				displayMenu = false;
+				scan.close();
 				break;
 			}
 			

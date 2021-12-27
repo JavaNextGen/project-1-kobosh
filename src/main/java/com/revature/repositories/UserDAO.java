@@ -229,5 +229,59 @@ public User create(User newUser)
 		}
 	return null;	
 }
+
+public User login(String unm, String pwd) {
+	
+	try(Connection conn = ConnectionFactory.getConnection())
+	{ //all of my SQL stuff will be within this try block
+		
+		//Initialize an empty ResultSet object that will store the results of our SQL query
+		ResultSet rs = null;
+		
+		//write the query that we want to send to the database, and assign it to a String
+		String sql ="select * from ers_users  where user_name = ?  and  user_password=?;"
+				;// "SELECT user_name FROM ers_users  where user_id=?;";
+		PreparedStatement pst=conn.prepareStatement(sql);
+		
+		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
+		pst.setString(1, unm);
+		pst.setString(2, pwd);
+		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
+		//The Statement object has a method that takes Strings to execute as a SQL query
+rs=pst.executeQuery();
+User user=null;
+	while(rs.next())
+			{
+			int ud=rs.getInt("user_id");
+				int rd=rs.getInt("role_id");
+					Role ro=Role.EMPLOYEE;
+					if(rd==2)
+						ro=Role.FINANCE_MANAGER;
+					String	um=null;
+					try {
+					um=rs.getString("user_name");
+					System.out.println("user name " + unm);
+					}catch(Exception e) {System.out.println(e.getMessage());};
+				
+				String	email=rs.getString("email");
+				String	fname=rs.getString("fname");
+				String	lname=rs.getString("lname");
+				String	wd=rs.getString("user_password");
+					user=new User(ud,um,wd,fname,lname,email,ro);
+					
+				return user;	
+			}
+	System.out.println("no such user try again");
+	return  null;
+			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
+		
+		
+		
+	
+	
+	
+	// TODO Auto-generated method stub
+	return null;
+}
 }
 

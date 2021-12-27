@@ -53,4 +53,11 @@ public class UserService {
 		}
 		return Optional.empty();
 	}
+
+	public User login(String unm, String pwd) {
+		// TODO Auto-generated method stub
+		UserDAO ud=new UserDAO();
+		return  ud.login(unm,pwd);
+		
+	}
 }
