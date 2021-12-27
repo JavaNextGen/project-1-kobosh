@@ -296,7 +296,7 @@ public User register(String unm, String pwd, String fnm, String lnm, String emai
 		String sql ="INSERT INTO  ers_users( user_name,user_password,fname,lname,email,role_id)" +
 		    " VALUES(?,?,?,?,?,?);"
 				;// "SELECT user_name FROM ers_users  where user_id=?;";
-		PreparedStatement pst=conn.prepareStatement(sql);
+		PreparedStatement pst=conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 		
 		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
 		pst.setString(1, unm);
@@ -307,29 +307,18 @@ public User register(String unm, String pwd, String fnm, String lnm, String emai
 		pst.setInt(6, role);
 		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
 		//The Statement object has a method that takes Strings to execute as a SQL query
-rs=pst.executeQuery();
-User user=null;
-	while(rs.next())
-			{
-			int ud=rs.getInt("user_id");
-				int rd=rs.getInt("role_id");
-					Role ro=Role.EMPLOYEE;
-					if(rd==2)
-						ro=Role.FINANCE_MANAGER;
-					String	um=null;
-					try {
-					um=rs.getString("user_name");
-					System.out.println("user name " + unm);
-					}catch(Exception e) {System.out.println(e.getMessage());};
-				
-				String	eml=rs.getString("email");
-				String	fname=rs.getString("fname");
-				String	lname=rs.getString("lname");
-				String	wd=rs.getString("user_password");
-					user=new User(ud,um,wd,fname,lname,eml,ro);
-					
-				return user;	
-			}
+        pst.executeUpdate();
+System.out.println("registered successfully ! login please");
+try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
+    if (generatedKeys.next()) {
+        int id=generatedKeys.getInt(1);
+        
+        User usr= getUserById(id);
+        return usr;
+    }
+}catch(Exception e) {
+        //throw new SQLException("Creating user failed, no ID obtained.");
+    }
 	System.out.println("no such user try again");
 	return  null;
 			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};

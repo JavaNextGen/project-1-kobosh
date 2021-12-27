@@ -64,7 +64,8 @@ public class UserService {
 	public User register(String unm, String pwd, String fnm, String lnm, String email, int role) {
 		// TODO Auto-generated method stub
 		UserDAO ud=new UserDAO();
-		return  ud.register(unm,pwd,fnm,lnm,email,role);
+		User u=  ud.register(unm,pwd,fnm,lnm,email,role);
+		return u;
 		 
 	}
 }

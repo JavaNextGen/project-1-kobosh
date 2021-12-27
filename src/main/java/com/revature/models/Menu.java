@@ -85,6 +85,7 @@ public class Menu
 			System.out.println("if not registered / logged in ");
 			System.out.println("enter  register OR enter login ");
 			String log=scan.nextLine();
+			if(log.equals("other")) break;
 			switch(log) {
 			case "register": while(loginUser== null)
 			{
@@ -95,7 +96,7 @@ public class Menu
 			}
 			break;
 			
-			
+			case "other": break;
 			case "login": while(loginUser== null)
 			{
 				//System.out.println(" have to Login ");
@@ -113,13 +114,7 @@ public class Menu
 		{ 
 			
 			
-			while(registeredUser== null)
-			{
-				System.out.println(" have to register ");
-				registeredUser=register();
-				
-				
-			}
+			
 			
 			System.out.println(" welcome " + loginUser.getFname() );
 			System.out.println("==============================================================");
