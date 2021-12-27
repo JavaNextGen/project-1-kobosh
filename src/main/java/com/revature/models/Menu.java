@@ -14,9 +14,38 @@ public class Menu
 {
 	
 	User loginUser=null;
+	User registeredUser=null;
 	
 	
-	
+	  User register()
+		{
+			String unm=null;
+			String pwd=null;
+			Scanner scan=new Scanner(System.in);
+			System.out.println(" user name ?");
+			unm=scan.nextLine();
+			System.out.println(" password?");
+			pwd=scan.nextLine();
+			System.out.println(" first name?");
+			String fnm=scan.nextLine();
+			System.out.println(" last name?");
+			String lnm=scan.nextLine();
+			System.out.println(" email?");
+			String email=scan.nextLine();
+			System.out.println(" role : 1  for  employee  or 2  for office manager?");
+			int role=scan.nextInt();
+		
+		
+		
+		
+			
+			
+			UserService us=new UserService();
+		User  success=us.register(unm,pwd,fnm,lnm,email,role);
+			//System.out.println(success);
+			//scan.close();
+			return success;
+		}
 	
 	
 	  User login()
@@ -51,19 +80,47 @@ public class Menu
 		System.out.println("*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*");
 		System.out.println("Welcome to The Krusty Krab Employee Management System");
 		System.out.println("*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*");
-		
+		while(registeredUser==null || loginUser==null)
+		{
+			System.out.println("if not registered / logged in ");
+			System.out.println("enter  register OR enter login ");
+			String log=scan.nextLine();
+			switch(log) {
+			case "register": while(loginUser== null)
+			{
+				//System.out.println(" have to Login ");
+				registeredUser=register();
+				
+				
+			}
+			break;
+			
+			
+			case "login": while(loginUser== null)
+			{
+				//System.out.println(" have to Login ");
+				loginUser=login();
+				
+				
+			}
+			break;
+			}
+		}
 		
 		//display the menu as long as the displayMenu boolean == true
 		//this is going to hold and display all my menu options until displayMenu == false
 		while(displayMenu) 
 		{ 
-			while(loginUser== null)
+			
+			
+			while(registeredUser== null)
 			{
-				System.out.println(" have to Login ");
-				loginUser=login();
+				System.out.println(" have to register ");
+				registeredUser=register();
 				
 				
 			}
+			
 			System.out.println(" welcome " + loginUser.getFname() );
 			System.out.println("==============================================================");
 			//menu options
