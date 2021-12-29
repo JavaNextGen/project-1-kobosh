@@ -181,7 +181,7 @@ User user=null;
 		//(Since there's no guarantee that the try will run)
 		
 	}
-public User create(User newUser) 
+public User create(  User newUser) 
 { //This is INSERT functionality 
 		
 		try(Connection conn = ConnectionFactory.getConnection())
@@ -212,12 +212,13 @@ public User create(User newUser)
 			//we use executeQuery() for selects
 			
 			//send confirmation to the console if successul.
-			System.out.println("Employee " + newUser.getUsername()+ " created. Welcome aboard!");
+			//System.out.println("Employee " + newUser.getUsername()+ " created. Welcome aboard!");
 			 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
 		            if (generatedKeys.next()) {
 		                int id=generatedKeys.getInt(1);
 		                
 		                User usr= getUserById(id);
+		                System.out.println("Employee " + usr.getUsername()+ " created. Welcome aboard!");
 		                return usr;
 		            }
 			 }catch(Exception e) {

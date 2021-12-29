@@ -72,7 +72,7 @@ public class Menu
 	//All of the menu display options and control flow are contained within this method
 	public void displayMenu()
 	{
-		
+		boolean breakout=false;
 		boolean displayMenu = true; //we're going to use this to toggle whether the menu continues after user input
 		Scanner scan = new Scanner(System.in); //Scanner object to parse (take) user input
 		
@@ -80,12 +80,19 @@ public class Menu
 		System.out.println("*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*");
 		System.out.println("Welcome to The Krusty Krab Employee Management System");
 		System.out.println("*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*");
-		while(registeredUser==null || loginUser==null)
+		 while(! breakout)
+		 {	
+			 
+			 System.out.println("if not registered / logged in ");
+				System.out.println("enter  register OR enter login ");
+				System.out.println("enter  breakout to not register or login ");
+				String log=scan.nextLine();
+			 if(log.equalsIgnoreCase("breakout"))
+				 break;
+			 while(registeredUser==null || loginUser==null)
 		{
-			System.out.println("if not registered / logged in ");
-			System.out.println("enter  register OR enter login ");
-			String log=scan.nextLine();
-			if(log.equals("other")) break;
+			
+			//if(log.equals("other")) break;
 			switch(log) {
 			case "register": while(loginUser== null)
 			{
@@ -96,7 +103,7 @@ public class Menu
 			}
 			break;
 			
-			case "other": break;
+			case "other": breakout=true; break;
 			case "login": while(loginUser== null)
 			{
 				//System.out.println(" have to Login ");
@@ -107,7 +114,7 @@ public class Menu
 			break;
 			}
 		}
-		
+		 }
 		//display the menu as long as the displayMenu boolean == true
 		//this is going to hold and display all my menu options until displayMenu == false
 		while(displayMenu) 
@@ -115,7 +122,7 @@ public class Menu
 			
 			
 			
-			
+			if(breakout)
 			System.out.println(" welcome " + loginUser.getFname() );
 			System.out.println("==============================================================");
 			//menu options
@@ -201,7 +208,7 @@ public class Menu
 				String username=scan.nextLine();
 				UserService us=new UserService();
 				Optional<User> usr=us.getByUsername(username);
-				System.out.println(usr);
+				System.out.println(usr.get().getUsername());
 				break;
 			}
 			case "usersbyid" :{
