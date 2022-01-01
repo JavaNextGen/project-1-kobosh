@@ -13,6 +13,7 @@ import java.sql.Date;
  *     <li>Creation Date</li>
  *     <li>Resolution Date</li>
  *     <li>Receipt Image</li>
+ *      <li>Reimb_type ReimbType</li>
  * </ul>
  *
  */
@@ -21,6 +22,8 @@ public class Reimbursement extends AbstractReimbursement {
 	private  Date  creation ;
 	private  Date  resolution ;
 	private  Image receipt ;
+	private  ReimbType reimb_type; ;
+
 
 
 
@@ -32,8 +35,15 @@ public class Reimbursement extends AbstractReimbursement {
      * This includes the minimum parameters needed for the {@link com.revature.models.AbstractReimbursement} class.
      * If other fields are needed, please create additional constructors.
      */
-    public Reimbursement(int id, Status status, User author, User resolver, double amount) {
+    public Reimbursement(int id, Status status, User author, User resolver,
+    		double amount,ReimbType reimb_type ,String description,
+    		Date creation,Date resolution, Image receipt) {
         super(id, status, author, resolver, amount);
+        this.creation=creation;
+        this.resolution=resolution;
+        this.description=description;
+        this.receipt=receipt;
+        this.reimb_type=reimb_type;
     }
 
 	public String getDescription() {
@@ -86,5 +96,13 @@ public class Reimbursement extends AbstractReimbursement {
                 '}';
 		
 		
+	}
+
+	public ReimbType getReimb_type() {
+		return reimb_type;
+	}
+
+	public void setReimb_type(ReimbType reimb_type) {
+		this.reimb_type = reimb_type;
 	}
 }
