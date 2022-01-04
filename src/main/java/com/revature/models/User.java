@@ -30,6 +30,9 @@ public class User extends AbstractUser {
     public User(int id, String username, String password, Role role)
     {
         super(id,username, password, role);
+        this.fname=null;
+        this.lname=null;
+        this.email=null;
     }
     public User(int id, String username, String password, String fnm,String lnm, String eml,Role role)
     {
@@ -64,7 +67,7 @@ public class User extends AbstractUser {
 	}
 	 @Override
 	    public String toString() {
-	        return "AbstractUser{" +
+	        return "User{" +
 	                "id=" + super.getId() +
 	                ", username='" + super.getUsername() + '\'' +
 	                ", password='" +super.getPassword() + '\'' +

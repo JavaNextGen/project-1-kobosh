@@ -30,7 +30,7 @@ public class AbstractReimbursement {
     public AbstractReimbursement() {
         super();
     }
-
+//new Reimbursement(2, Status.PENDING, GENERIC_EMPLOYEE_1, null, 150.00);
     public AbstractReimbursement(int id, Status status, User author, User resolver, double amount) {
         super();
         this.id = id;

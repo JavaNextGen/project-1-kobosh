@@ -27,15 +27,15 @@ public class UserService {
 	/**
 	 *     Should retrieve a User with the corresponding username or an empty optional if there is no match.
      */
-	public User create(User u) {
+	public Optional<User> create(User u) {
 		UserDAO ud=new UserDAO();
-		User usr=ud.create( u);
+		Optional<User >usr=ud.create( u);
 		return usr;
 	}
 	
-	public User getUserById(int id) {
+	public Optional<User> getUserById(int id) {
 		UserDAO ud=new UserDAO();
-		User usr=ud.getUserById(id);
+		Optional<User> usr=ud.getUserById(id);
 		return usr;
 	}
 	public List<User> getUsers() {
@@ -61,10 +61,10 @@ public class UserService {
 		
 	}
 
-	public User register(String unm, String pwd, String fnm, String lnm, String email, int role) {
+	public  Optional< User> register(String unm, String pwd, String fnm, String lnm, String email, int role) {
 		// TODO Auto-generated method stub
 		UserDAO ud=new UserDAO();
-		User u=  ud.register(unm,pwd,fnm,lnm,email,role);
+		Optional<User> u=  ud.register(unm,pwd,fnm,lnm,email,role);
 		return u;
 		 
 	}

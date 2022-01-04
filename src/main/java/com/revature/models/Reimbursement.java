@@ -25,10 +25,11 @@ public class Reimbursement extends AbstractReimbursement {
 	private  ReimbType reimb_type; ;
 
 
-
-
-    public Reimbursement() {
-        super();
+//new Reimbursement(2, Status.PENDING, GENERIC_EMPLOYEE_1, null, 150.00);
+    public Reimbursement()
+    {super();}
+    public Reimbursement(int id, Status status, User author,User resolver, double amount) {
+        super(id,status,author,resolver,amount);
     }
 
     /**

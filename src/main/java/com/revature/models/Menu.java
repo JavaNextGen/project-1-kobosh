@@ -17,7 +17,7 @@ public class Menu
 	User registeredUser=null;
 	
 	
-	  User register()
+	 Optional< User> register()
 		{
 			String unm=null;
 			String pwd=null;
@@ -41,7 +41,7 @@ public class Menu
 			
 			
 			UserService us=new UserService();
-		User  success=us.register(unm,pwd,fnm,lnm,email,role);
+		Optional<User > success=us.register(unm,pwd,fnm,lnm,email,role);
 			//System.out.println(success);
 			//scan.close();
 			return success;
@@ -72,7 +72,9 @@ public class Menu
 	//All of the menu display options and control flow are contained within this method
 	public void displayMenu()
 	{
-		boolean breakout=false;
+		/*
+		 boolean breakout=false;
+		 
 		boolean displayMenu = true; //we're going to use this to toggle whether the menu continues after user input
 		Scanner scan = new Scanner(System.in); //Scanner object to parse (take) user input
 		
@@ -161,7 +163,7 @@ public class Menu
 			User  loginUser=us.login(unm,pwd);
 				System.out.println(loginUser);
 				//break; //we need a break in each case block, or else all the other cases will still run
-			} */
+			} *
 			case "create": {
 				System.out.println("inserting user ");
 				System.out.println("enter  user name ");
@@ -236,7 +238,7 @@ public class Menu
 			} //end of switch
 			
 		} //end of while loop
-		
+		*/
 		
 	}
 	

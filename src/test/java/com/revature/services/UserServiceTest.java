@@ -39,28 +39,28 @@ public class UserServiceTest {
 
     @Test
     public void testGetByUsernamePassesWhenUsernameExists() {
-    	
-    	UserService us=new UserService();
-    	Optional<User> u=us.getByUsername("hassanm");
+    	System.out.println(" callin test method");
+    	//UserService us=new UserService();
+    	//Optional<User> u=us.getByUsername("hassanm");
     	//Optional<User> optJob =	Optional.ofNullable(us.getByUsername("hassanm"));
-    	assertEquals(u.get(). getUsername(), "hassanm");
-       // when(userDAO.getByUsername(anyString())).thenReturn(Optional.of(GENERIC_EMPLOYEE_1));
+    	//assertEquals(u.get(). getUsername(), "hassanm");
+       when(userDAO.getByUsername(anyString())).thenReturn(Optional.of(GENERIC_EMPLOYEE_1));
 
-       // assertEquals(Optional.of(GENERIC_EMPLOYEE_1), userService.getByUsername(GENERIC_EMPLOYEE_1.getUsername()));
+        assertEquals(Optional.of(GENERIC_EMPLOYEE_1), userService.getByUsername(GENERIC_EMPLOYEE_1.getUsername()));
 
-        //verify(userDAO).getByUsername(GENERIC_EMPLOYEE_1.getUsername());
+        verify(userDAO).getByUsername(GENERIC_EMPLOYEE_1.getUsername());
     }
     
     @Test
     public void testGetByIdPassesWhenUsernameExists() {
     	
-    	UserService us=new UserService();
+    	/*UserService us=new UserService();
     	User u=us.getUserById(2);
-    	assertEquals(u.getUsername(), "hassanm");
-       // when(userDAO.getByUsername(anyString())).thenReturn(Optional.of(GENERIC_EMPLOYEE_1));
+    	assertEquals(u.getUsername(), "hassanm");*/
+        when(userDAO.getByUsername(anyString())).thenReturn(Optional.of(GENERIC_EMPLOYEE_1));
 
-       // assertEquals(Optional.of(GENERIC_EMPLOYEE_1), userService.getByUsername(GENERIC_EMPLOYEE_1.getUsername()));
+       assertEquals(Optional.of(GENERIC_EMPLOYEE_1), userService.getByUsername(GENERIC_EMPLOYEE_1.getUsername()));
 
-        //verify(userDAO).getByUsername(GENERIC_EMPLOYEE_1.getUsername());
+        verify(userDAO).getByUsername(GENERIC_EMPLOYEE_1.getUsername());
     }
 }

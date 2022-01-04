@@ -15,7 +15,7 @@ import com.revature.util.ConnectionFactory;
 
 public class UserDAO {
 	
-public User getUserById(int id){ //This will use SQL SELECT functionality
+public  Optional< User> getUserById(int id){ //This will use SQL SELECT functionality
 
 		
 		try(Connection conn = ConnectionFactory.getConnection())
@@ -46,15 +46,15 @@ rs=pst.executeQuery();
 						String	unm=null;
 						try {
 						unm=rs.getString("user_name");
-						System.out.println("user name " + unm);
+						//System.out.println("user name " + unm);
 						}catch(Exception e) {System.out.println(e.getMessage());};
 					
 					String	email=rs.getString("email");
 					String	fname=rs.getString("fname");
 					String	lname=rs.getString("lname");
 					String	pwd=rs.getString("user_password");
-						User user=new User(id,unm,pwd,fname,lname,email,ro);
-						return user;
+						User user=new User(id,unm,pwd,ro);//fname,lname,email,ro);
+						return Optional.of( user);
 				
 					
 					
@@ -79,12 +79,13 @@ public Optional< User >  getByUsername(String uname)
 		ResultSet rs = null;
 		
 		//write the query that we want to send to the database, and assign it to a String
-		String sql ="select * from ers_users  where user_name = ?;"
+		String sql ="select * from ers_users  where user_name = ?  and user_password=?;"
 				;// "SELECT user_name FROM ers_users  where user_id=?;";
 		PreparedStatement pst=conn.prepareStatement(sql);
 		
 		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
 		pst.setString(1, uname);
+		//pst.setString(1, upwd);
 		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
 		//The Statement object has a method that takes Strings to execute as a SQL query
 rs=pst.executeQuery();
@@ -106,7 +107,7 @@ User user=null;
 				String	fname=rs.getString("fname");
 				String	lname=rs.getString("lname");
 				String	pwd=rs.getString("user_password");
-					 user=new User(ud,unm,pwd,fname,lname,email,ro);
+					 user=new User(ud,unm,pwd,ro);//fname,lname,email,ro);
 					
 			}
 	
@@ -181,7 +182,7 @@ User user=null;
 		//(Since there's no guarantee that the try will run)
 		
 	}
-public User create(  User newUser) 
+public Optional<User> create(  User newUser) 
 { //This is INSERT functionality 
 		
 		try(Connection conn = ConnectionFactory.getConnection())
@@ -217,8 +218,8 @@ public User create(  User newUser)
 		            if (generatedKeys.next()) {
 		                int id=generatedKeys.getInt(1);
 		                
-		                User usr= getUserById(id);
-		                System.out.println("Employee " + usr.getUsername()+ " created. Welcome aboard!");
+		             Optional<   User> usr= getUserById(id);
+		                System.out.println("Employee " + usr.get().getUsername()+ " created. Welcome aboard!");
 		                return usr;
 		            }
 			 }catch(Exception e) {
@@ -228,7 +229,7 @@ public User create(  User newUser)
 			System.out.println("Add employee failed! :(");
 			e.printStackTrace();
 		}
-	return null;	
+	return Optional.empty();	
 }
 
 public User login(String unm, String pwd) {
@@ -285,7 +286,7 @@ User user=null;
 	return null;
 }
 
-public User register(String unm, String pwd, String fnm, String lnm, String email, int role) {
+public Optional<User> register(String unm, String pwd, String fnm, String lnm, String email, int role) {
 	// TODO Auto-generated method stub
 	try(Connection conn = ConnectionFactory.getConnection())
 	{ //all of my SQL stuff will be within this try block
@@ -314,7 +315,7 @@ try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
     if (generatedKeys.next()) {
         int id=generatedKeys.getInt(1);
         
-        User usr= getUserById(id);
+      Optional<  User> usr= getUserById(id);
         return usr;
     }
 }catch(Exception e) {
@@ -333,6 +334,37 @@ try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
 	return null;
 
 	
+}
+
+public boolean deleteUser(int userId) {
+	try(Connection conn = ConnectionFactory.getConnection())
+	{ //all of my SQL stuff will be within this try block
+		
+		//Initialize an empty ResultSet object that will store the results of our SQL query
+		ResultSet rs = null;
+		
+		//write the query that we want to send to the database, and assign it to a String
+		String sql ="delete  from ers_users  where user_id = ?;"
+				;// "SELECT user_name FROM ers_users  where user_id=?;";
+		PreparedStatement pst=conn.prepareStatement(sql);
+		
+		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
+		pst.setInt(1, userId);
+		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
+		//The Statement object has a method that takes Strings to execute as a SQL query
+		pst.executeUpdate();
+
+	
+	return  true;
+			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
+		
+		
+		
+	
+	
+	
+	
+	return false;
 }
 }
 
