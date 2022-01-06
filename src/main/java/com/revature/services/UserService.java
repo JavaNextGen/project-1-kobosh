@@ -43,29 +43,9 @@ public class UserService {
 		List<User> l=ud.getUsers();
 		return l;
 	}
-	public Optional<User> getByUsername(String username) {
+	public User getByUsername(String username) {
 		UserDAO ud=new UserDAO();
-		List<User> l=ud.getUsers();
-		for(User u:l)
-		
-		if (u.getUsername().equals(username) ){
-			return Optional.ofNullable(u);
-		}
-		return Optional.empty();
-	}
-
-	public User login(String unm, String pwd) {
-		// TODO Auto-generated method stub
-		UserDAO ud=new UserDAO();
-		return  ud.login(unm,pwd);
-		
-	}
-
-	public  Optional< User> register(String unm, String pwd, String fnm, String lnm, String email, int role) {
-		// TODO Auto-generated method stub
-		UserDAO ud=new UserDAO();
-		Optional<User> u=  ud.register(unm,pwd,fnm,lnm,email,role);
-		return u;
-		 
-	}
+	User l=ud.getByUsername(username);
+		return l;
+	}	
 }

@@ -74,7 +74,7 @@ public class User extends AbstractUser {
 	                
 	                ", f_name "+ this.fname + '\'' +
 	                 ", l_name "+ this.lname + '\'' +
-	                  ", f_name "+ this.email + '\'' +
+	                  ", email "+ this.email + '\'' +
 	                  ", role=" + super.getRole() +
 	                '}';
 	    }

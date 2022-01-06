@@ -1,9 +1,13 @@
 package com.revature.services;
 
+import com.revature.exceptions.RegistrationUnsuccessfulException;
 import com.revature.models.Reimbursement;
+import com.revature.models.Role;
 import com.revature.models.Status;
 import com.revature.models.User;
+import com.revature.repositories.ReimbursementDAO;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +29,8 @@ import java.util.List;
  * </ul>
  */
 public class ReimbursementService {
+	
+	AuthService authsrv=new AuthService();
 
     /**
      * <ul>
@@ -40,14 +46,33 @@ public class ReimbursementService {
      * The Resolver should be null. Additional fields may be null.
      * After processing, the reimbursement will have its status changed to either APPROVED or DENIED.
      */
-    public Reimbursement process(Reimbursement unprocessedReimbursement, Status finalStatus, User resolver) {
-        return null;
+	
+	ReimbursementDAO  DAO =new ReimbursementDAO();
+    public Reimbursement process(Reimbursement unprocessedReimbursement,
+    		Status finalStatus, User resolver) throws RegistrationUnsuccessfulException{
+            
+       
+    	   if (!resolver.getRole().equals(Role.FINANCE_MANAGER)) {
+    		   throw new RegistrationUnsuccessfulException("Resolver must be Finance Manager ");
+			
+		}
+    	// List<Reimbursement> l=DAO.getByStatus(Status.PENDING);
+    	   if(unprocessedReimbursement.getId()>0)
+    	   if(unprocessedReimbursement.getStatus().equals(Status.PENDING))
+    	   
+    	   return DAO.update(unprocessedReimbursement).get();
+    	return null;
+            //else  throw new SQLException("");
+    	
+    	
     }
 
     /**
      * Should retrieve all reimbursements with the correct status.
      */
     public List<Reimbursement> getReimbursementsByStatus(Status status) {
-        return Collections.emptyList();
+    	
+    return	  DAO.getByStatus(status);
+        
     }
 }

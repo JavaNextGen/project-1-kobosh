@@ -1,7 +1,11 @@
 package com.revature.services;
 
+import com.revature.exceptions.RegistrationUnsuccessfulException;
 import com.revature.models.User;
+import com.revature.repositories.UserDAO;
 
+import java.util.List;
+//import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -17,6 +21,11 @@ import java.util.Optional;
  * </ul>
  */
 public class AuthService {
+	
+	
+	
+	UserDAO DAO=new UserDAO();
+	static User loggedinUser =null;
 
     /**
      * <ul>
@@ -26,8 +35,26 @@ public class AuthService {
      *     <li>Should throw exception if the passwords do not match.</li>
      *     <li>Must return user object if the user logs in successfully.</li>
      * </ul>
+     * @throws Exception 
      */
-    public User login(String username, String password) {
+    public User login(String username, String password) throws Exception {
+    	
+    List<User> lst=DAO.getUsers();
+    //User foundUser=null;
+    boolean found=false;
+    for(User  u :lst)
+    {
+    	if (u.getUsername().equals(username) && !u.getPassword().equals(password )) {
+			throw new Exception("password does not match");
+		}
+    	if (u.getPassword().equals(password )&& u.getUsername().equals(username)) {
+    		loggedinUser=u;
+    		found=true;
+			return loggedinUser;
+		}
+    	
+    }
+    if(!found) throw new Exception(" user not found");
         return null;
     }
 
@@ -44,8 +71,21 @@ public class AuthService {
      * Note: userToBeRegistered will have an id=0, additional fields may be null.
      * After registration, the id will be a positive integer.
      */
-    public User register(User userToBeRegistered) {
-        return null;
+    public User register(User userToBeRegistered) throws RegistrationUnsuccessfulException {
+    	 List<User> lst=DAO.getUsers();
+    	    //User foundUser=null;
+    	 String email=userToBeRegistered.getEmail();
+    	 String username=userToBeRegistered.getEmail();
+    	    for(User  u :lst)
+    	    {
+    	    	if (u.getEmail().equals(email ) || u.getUsername().equals(username)) {
+    	    		
+    				 throw new RegistrationUnsuccessfulException("registration unsueccessful");
+    			}
+    	    	
+    	    }
+    	 return       DAO.create(userToBeRegistered).get();
+        
     }
 
     /**
@@ -54,6 +94,10 @@ public class AuthService {
      * possibility of a user being unavailable.
      */
     public Optional<User> exampleRetrieveCurrentUser() {
+    	
+    	if(loggedinUser !=null)
+    		return Optional.of(loggedinUser);
+    	
         return Optional.empty();
     }
 }

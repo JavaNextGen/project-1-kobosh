@@ -1,0 +1,69 @@
+public  User   getByUsername(String uname) 
+{
+	try(Connection conn = ConnectionFactory.getConnection())
+	{ 	
+		ResultSet rs = null;		
+		String sql ="select * from ers_users  where user_name = ?;";			
+		PreparedStatement pst=conn.prepareStatement(sql);		
+		pst.setString(1, uname);
+		
+		rs=pst.executeQuery();
+                User user=null;
+	        if(rs.next())
+			{
+			int ud=rs.getInt("user_id");
+				int rd=rs.getInt("role_id");
+					Role ro=Role.EMPLOYEE;
+					if(rd==2)
+						ro=Role.FINANCE_MANAGER;
+					String	unm=rs.getString("user_name");
+					String	pwd=rs.getString("user_password");
+					 user=new User(ud,unm,pwd,ro);				
+			}
+	        if(user!=null)
+	    { return   user;// Optional.of(user);}
+	    else return null;
+			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};	
+	return null;}
+
+//UserService
+public class UserService {
+
+	public User getByUsername(String username) {
+		UserDAO ud=new UserDAO();
+	User user=ud.getByUsername(username);
+		return user;
+	}	
+}
+
+//mokito test
+public class UserServiceTest {
+
+    private static UserService userService;
+    private static UserDAO userDAO;
+    private User GENERIC_EMPLOYEE_1;
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        userService = new UserService();
+        userDAO = mock(UserDAO.class);
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        GENERIC_EMPLOYEE_1 = new User(0, "genericEmployee1", "genericPassword", Role.EMPLOYEE);
+    }
+
+    @Test
+    public void testGetByUsernamePassesWhenUsernameExists() {
+    	
+       when(userDAO.getByUsername(anyString())).thenReturn(GENERIC_EMPLOYEE_1 );
+
+        assertEquals(GENERIC_EMPLOYEE_1,
+        	userService.getByUsername(GENERIC_EMPLOYEE_1.getUsername()));
+
+        verify(userDAO).getByUsername(GENERIC_EMPLOYEE_1.getUsername());
+    }
+    
+   }
+
+

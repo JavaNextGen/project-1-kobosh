@@ -70,7 +70,7 @@ rs=pst.executeQuery();
 			return null;
 		}
 
-public Optional< User >  getByUsername(String uname) 
+public  User   getByUsername(String uname) 
 {
 	try(Connection conn = ConnectionFactory.getConnection())
 	{ //all of my SQL stuff will be within this try block
@@ -79,18 +79,17 @@ public Optional< User >  getByUsername(String uname)
 		ResultSet rs = null;
 		
 		//write the query that we want to send to the database, and assign it to a String
-		String sql ="select * from ers_users  where user_name = ?  and user_password=?;"
-				;// "SELECT user_name FROM ers_users  where user_id=?;";
+		String sql ="select * from ers_users  where user_name = ?;";			;
 		PreparedStatement pst=conn.prepareStatement(sql);
 		
 		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
 		pst.setString(1, uname);
-		//pst.setString(1, upwd);
+		
 		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
 		//The Statement object has a method that takes Strings to execute as a SQL query
 rs=pst.executeQuery();
 User user=null;
-	while(rs.next())
+	if(rs.next())
 			{
 			int ud=rs.getInt("user_id");
 				int rd=rs.getInt("role_id");
@@ -98,20 +97,21 @@ User user=null;
 					if(rd==2)
 						ro=Role.FINANCE_MANAGER;
 					String	unm=null;
-					try {
+					//try {
 					unm=rs.getString("user_name");
-					System.out.println("user name " + unm);
-					}catch(Exception e) {System.out.println(e.getMessage());};
+					//System.out.println("user name " + unm);
+					//}catch(Exception e) {System.out.println(e.getMessage());};
 				
-				String	email=rs.getString("email");
+				/*String	email=rs.getString("email");
 				String	fname=rs.getString("fname");
-				String	lname=rs.getString("lname");
+				String	lname=rs.getString("lname");*/
 				String	pwd=rs.getString("user_password");
 					 user=new User(ud,unm,pwd,ro);//fname,lname,email,ro);
 					
 			}
-	
-	return  Optional.ofNullable(user);
+	if(user!=null)
+	return   user;// Optional.of(user);
+	else return null;
 			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
 		
 		
@@ -232,7 +232,7 @@ public Optional<User> create(  User newUser)
 	return Optional.empty();	
 }
 
-public User login(String unm, String pwd) {
+/*public User login(String unm, String pwd) {
 	
 	try(Connection conn = ConnectionFactory.getConnection())
 	{ //all of my SQL stuff will be within this try block
@@ -334,7 +334,7 @@ try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
 	return null;
 
 	
-}
+}*/
 
 public boolean deleteUser(int userId) {
 	try(Connection conn = ConnectionFactory.getConnection())
@@ -359,12 +359,9 @@ public boolean deleteUser(int userId) {
 			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
 		
 		
-		
-	
-	
-	
-	
 	return false;
 }
+
+
 }
 

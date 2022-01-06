@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.revature.services.AuthService;
 import com.revature.services.UserService;
 
 //import com.revature.repositories.EmployeeDAO;
@@ -17,7 +18,7 @@ public class Menu
 	User registeredUser=null;
 	
 	
-	 Optional< User> register()
+	  public  User register()
 		{
 			String unm=null;
 			String pwd=null;
@@ -26,29 +27,31 @@ public class Menu
 			unm=scan.nextLine();
 			System.out.println(" password?");
 			pwd=scan.nextLine();
-			System.out.println(" first name?");
+			/*System.out.println(" first name?");
 			String fnm=scan.nextLine();
 			System.out.println(" last name?");
-			String lnm=scan.nextLine();
+			String lnm=scan.nextLine();*/
 			System.out.println(" email?");
 			String email=scan.nextLine();
 			System.out.println(" role : 1  for  employee  or 2  for office manager?");
 			int role=scan.nextInt();
-		
-		
-		
-		
+			Role ro=Role.EMPLOYEE;
 			
+			if(role==2) ro=Role.FINANCE_MANAGER;
+		//Enum.ordinal()
+		User u=new User(0,unm,pwd,ro);
+		 RegistrationModel model=new RegistrationModel();
+			return model.register(u);
 			
-			UserService us=new UserService();
-		Optional<User > success=us.register(unm,pwd,fnm,lnm,email,role);
+			//UserService us=new UserService();
+		//Optional<User > success=us.register(unm,pwd,fnm,lnm,email,role);
 			//System.out.println(success);
 			//scan.close();
-			return success;
+			//return  null;// success;
 		}
 	
 	
-	  User login()
+	  public User login()
 	{
 		String unm=null;
 		String pwd=null;
@@ -57,14 +60,18 @@ public class Menu
 		unm=scan.nextLine();
 		System.out.println(" password?");
 		pwd=scan.nextLine();
-	
+		RegistrationModel regmodel=new RegistrationModel();
+	  User u=   regmodel.login(unm, pwd);
+	  scan.close();
+	  return u;
 		
 		
-		UserService us=new UserService();
+		/*UserService us=new UserService();
+		
 	User  success=us.login(unm,pwd);
 		//System.out.println(success);
 		//scan.close();
-		return success;
+		return success;*/
 	}
 
 	//EmployeeDAO eDAO = new EmployeeDAO(); //we need this object to use methods from EmployeeDAO
