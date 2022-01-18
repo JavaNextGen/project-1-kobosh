@@ -6,7 +6,7 @@ import com.revature.services.AuthService;
 public class RegistrationModel {
 	
 	
-	public  User login(String u,String p) {
+	/*public  User login(String u,String p) {
 		//System.out.println("Please log in");
     	AuthService authService=new AuthService();
     	try {
@@ -24,17 +24,17 @@ public class RegistrationModel {
     	//}
 	
 	return null;
-}
+}*/
 public User register(User user)
 {
-	AuthService authService=new AuthService();
+	/*AuthService authService=new AuthService();
 	try {
 		User lgin=authService.register(user);
 		return lgin;
 		//System.out.println( "welcome  "+ lgin.getUsername());
 	}catch (RegistrationUnsuccessfulException e) {
 		System.out.println(e.getMessage());
-	};
+	};*/
 return null;
 }
 }

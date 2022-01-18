@@ -5,7 +5,8 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import com.revature.services.AuthService;
-import com.revature.services.UserService;
+
+import models.UserService;
 
 //import com.revature.repositories.EmployeeDAO;
 
@@ -61,9 +62,9 @@ public class Menu
 		System.out.println(" password?");
 		pwd=scan.nextLine();
 		RegistrationModel regmodel=new RegistrationModel();
-	  User u=   regmodel.login(unm, pwd);
+	//  User u=   regmodel.login(unm, pwd);
 	  scan.close();
-	  return u;
+	  return null;
 		
 		
 		/*UserService us=new UserService();

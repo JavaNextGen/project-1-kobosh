@@ -13,10 +13,62 @@ import com.revature.models.Role;
 import com.revature.models.User;
 import com.revature.util.ConnectionFactory;
 
-public class UserDAO {
+public class UserDAO implements IUserDAO {
 	
-public  Optional< User> getUserById(int id){ //This will use SQL SELECT functionality
+	@Override
+	public Optional<User> update(  User newUser) 
+	{ //This is INSERT functionality 
+			
+			try(Connection conn = ConnectionFactory.getConnection())
+			{
+				
+				//we'll create a SQL statement using parameters to insert a new Employee
+				String sql = "UPDATE ers_users set  user_name=?,user_password =?"
+						+ ",fname=?, lname=?,email=?, role_id=? where user_id=? ;" ;
+				
+				PreparedStatement ps = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS); //we use PreparedStatements for SQL commands with variables
+				
+				//use the PreparedStatement objects' methods to insert values into the query's ?s
+				//the values will come from the Employee object we send in.
+				ps.setString(1, newUser.getUsername()); //1 is the first ?, 2 is the second, etc.
+				ps.setString(2, newUser.getPassword());
+				
+				ps.setString(3, newUser.getFname()); //1 is the first ?, 2 is the second, etc.
+				ps.setString(4, newUser.getLname());
+				ps.setString(5, newUser.getEmail());
+				ps.setInt(7, newUser.getId());
+				//if (newUser.getRole().toString().equalsIgnoreCase("EMPLOYEE")) {
+					ps.setInt(6,  newUser.getRole().ordinal()+ 1);
+					
+				//}	else {ps.setInt(6, 2);}
+				
+				//this executeUpdate() method actually sends and executes the SQL command we built
+				ps.executeUpdate(); //we use executeUpdate() for inserts, updates, and deletes. 
+				//we use executeQuery() for selects
+				
+				//send confirmation to the console if successul.
+				//System.out.println("Employee " + newUser.getUsername()+ " created. Welcome aboard!");
+				 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+			            if (generatedKeys.next()) {
+			                int id=generatedKeys.getInt(1);
+			                
+			             Optional< User> usr= getUserById(id);
+			                System.out.println("Employee " + usr.get().getUsername()+ " created. Welcome aboard!");
+			                return usr;
+			            }
+				 }catch(Exception e) {
+			                //throw new SQLException("Creating user failed, no ID obtained.");
+			            }
+			} catch(SQLException e) {
+				System.out.println("Add employee failed! :(");
+				e.printStackTrace();
+			}
+		return Optional.empty();	
+	}
 
+@Override
+public  Optional< User> getUserById(int id){ //This will use SQL SELECT functionality
+	//if(id==0) return  Optional.empty();
 		
 		try(Connection conn = ConnectionFactory.getConnection())
 		{ //all of my SQL stuff will be within this try block
@@ -34,29 +86,25 @@ public  Optional< User> getUserById(int id){ //This will use SQL SELECT function
 			//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
 			//The Statement object has a method that takes Strings to execute as a SQL query
 rs=pst.executeQuery();
-		while(rs.next())
+		if(rs.next())
 				{
 				//int ud=rs.getInt("user_id");
 					int rd=rs.getInt("role_id");
-						Role ro=Role.EMPLOYEE;
-						if(rd==2)
-							ro=Role.FINANCE_MANAGER;
-				
+						Role ro=Role.values()[--rd];//).EMPLOYEE;
 						
-						String	unm=null;
-						try {
-						unm=rs.getString("user_name");
+						
+						String	unm=rs.getString("user_name");
 						//System.out.println("user name " + unm);
-						}catch(Exception e) {System.out.println(e.getMessage());};
+						//}catch(Exception e) {System.out.println(e.getMessage());};
 					
-					String	email=rs.getString("email");
+
+						
+						String	email=rs.getString("email");
 					String	fname=rs.getString("fname");
 					String	lname=rs.getString("lname");
 					String	pwd=rs.getString("user_password");
 						User user=new User(id,unm,pwd,ro);//fname,lname,email,ro);
-						return Optional.of( user);
-				
-					
+					return Optional.of(user);
 					
 				}
 				}catch(SQLException e) {
@@ -67,59 +115,46 @@ rs=pst.executeQuery();
 				}
 			
 			
-			return null;
+			return Optional.empty();
 		}
 
-public  User   getByUsername(String uname) 
+@Override
+public Optional< User>  getByUsername(String uname) 
 {
 	try(Connection conn = ConnectionFactory.getConnection())
-	{ //all of my SQL stuff will be within this try block
-		
-		//Initialize an empty ResultSet object that will store the results of our SQL query
+	{ 
 		ResultSet rs = null;
 		
-		//write the query that we want to send to the database, and assign it to a String
 		String sql ="select * from ers_users  where user_name = ?;";			;
-		PreparedStatement pst=conn.prepareStatement(sql);
-		
-		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
+		PreparedStatement pst=conn.prepareStatement(sql);		
 		pst.setString(1, uname);
-		
-		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
-		//The Statement object has a method that takes Strings to execute as a SQL query
+		//boolean t=rs.first();
 rs=pst.executeQuery();
 User user=null;
 	if(rs.next())
 			{
 			int ud=rs.getInt("user_id");
 				int rd=rs.getInt("role_id");
-					Role ro=Role.EMPLOYEE;
-					if(rd==2)
-						ro=Role.FINANCE_MANAGER;
-					String	unm=null;
-					//try {
-					unm=rs.getString("user_name");
-					//System.out.println("user name " + unm);
-					//}catch(Exception e) {System.out.println(e.getMessage());};
 				
-				/*String	email=rs.getString("email");
-				String	fname=rs.getString("fname");
-				String	lname=rs.getString("lname");*/
+					Role ro=  Role.values()[rd++]; // EMPLOYEE;
+					//if(rd==2)
+						//ro=Role.FINANCE_MANAGER;
+					String	unm=null;
+					
+					unm=rs.getString("user_name");
+					
 				String	pwd=rs.getString("user_password");
 					 user=new User(ud,unm,pwd,ro);//fname,lname,email,ro);
 					
 			}
-	if(user!=null)
-	return   user;// Optional.of(user);
-	else return null;
+	
+	return    Optional.ofNullable(user);
+	
 			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
-		
-		
-		
-	
-	
-	
-	return null;}
+			
+	  return Optional.ofNullable(null);
+	}
+	@Override
 	public List<User> getUsers(){ //This will use SQL SELECT functionality
 
 		
@@ -182,6 +217,7 @@ User user=null;
 		//(Since there's no guarantee that the try will run)
 		
 	}
+@Override
 public Optional<User> create(  User newUser) 
 { //This is INSERT functionality 
 		
@@ -218,7 +254,7 @@ public Optional<User> create(  User newUser)
 		            if (generatedKeys.next()) {
 		                int id=generatedKeys.getInt(1);
 		                
-		             Optional<   User> usr= getUserById(id);
+		             Optional< User> usr= getUserById(id);
 		                System.out.println("Employee " + usr.get().getUsername()+ " created. Welcome aboard!");
 		                return usr;
 		            }
@@ -336,6 +372,7 @@ try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
 	
 }*/
 
+@Override
 public boolean deleteUser(int userId) {
 	try(Connection conn = ConnectionFactory.getConnection())
 	{ //all of my SQL stuff will be within this try block

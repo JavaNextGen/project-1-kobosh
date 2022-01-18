@@ -6,30 +6,31 @@ import java.util.Optional;
 
 import com.google.gson.Gson;
 import com.revature.models.User;
+import com.revature.repositories.IUserDAO;
 import com.revature.repositories.UserDAO;
-import com.revature.services.UserService;
 
 import io.javalin.http.Handler;
+import models.UserService;
 
 public class UserController {
 	
-		UserDAO ces = new UserDAO();
+		IUserDAO ces = new UserDAO();
 		
 		public Handler getEmployeeUpdateHandler = (ctx)-> {
-			
+			System.out.println("callin update handler");
 			  if(ctx.req.getSession() != null) {
 				  
 				  String body = ctx.body();
 
 			        Gson gson = new Gson();
-
+try {
 			        User employee = gson.fromJson(body, User.class);
-
-	             Optional<User> allEmployees = ces.create(employee);//.getAllChallengeEmployees();
+System.out.println(employee);
+	             Optional<User> allEmployees = ces.update(employee);//.getAllChallengeEmployees();
 	              // Gson gson1 = new Gson();
 	               String JSONEmployees = gson.toJson(allEmployees);
 	               ctx.result(JSONEmployees);
-	               ctx.status(200);
+	               ctx.status(200);}catch(Exception e) {System.out.println(e.getMessage());}
 
 	           } else {
 	               ctx.result("Failed to reletive employees");
@@ -39,6 +40,7 @@ public class UserController {
 		
 		
 		public Handler getEmployeeByIdHandler = (ctx)-> {
+			System.out.println("calling usercontroller  handler");
 			String e_id=ctx.pathParam("e_id");
 			  if(ctx.req.getSession() != null) {
 	           Optional<  User > allEmployees = ces.getUserById(Integer.parseInt (e_id));//.getAllChallengeEmployees();

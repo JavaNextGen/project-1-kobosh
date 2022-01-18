@@ -1,11 +1,14 @@
 package com.revature.services;
-
+import java.util.Optional;
 import com.revature.exceptions.RegistrationUnsuccessfulException;
 import com.revature.models.Reimbursement;
 import com.revature.models.Role;
 import com.revature.models.Status;
 import com.revature.models.User;
+import com.revature.repositories.IReimbursementDAO;
+import com.revature.repositories.IUserDAO;
 import com.revature.repositories.ReimbursementDAO;
+import com.revature.repositories.UserDAO;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -28,9 +31,22 @@ import java.util.List;
  *     <li>Get All Reimbursements</li>
  * </ul>
  */
-public class ReimbursementService {
+public class ReimbursementService implements IReimursementService {
 	
-	AuthService authsrv=new AuthService();
+	
+	private final IReimbursementDAO reimbDao;
+
+	  public ReimbursementService() {
+	    this(new ReimbursementDAO());
+	  }
+
+	  /* package private for testing */
+	  public ReimbursementService(IReimbursementDAO userDAO2) {
+	    this.reimbDao = userDAO2;
+	    
+	  }
+	
+	
 
     /**
      * <ul>
@@ -47,9 +63,10 @@ public class ReimbursementService {
      * After processing, the reimbursement will have its status changed to either APPROVED or DENIED.
      */
 	
-	ReimbursementDAO  DAO =new ReimbursementDAO();
-    public Reimbursement process(Reimbursement unprocessedReimbursement,
-    		Status finalStatus, User resolver) throws RegistrationUnsuccessfulException{
+	
+    @Override
+	public Optional<  Reimbursement> process(Reimbursement unprocessedReimbursement,
+    		Status finalStatus, User resolver) throws Exception{
             
        
     	   if (!resolver.getRole().equals(Role.FINANCE_MANAGER)) {
@@ -57,12 +74,20 @@ public class ReimbursementService {
 			
 		}
     	// List<Reimbursement> l=DAO.getByStatus(Status.PENDING);
-    	   if(unprocessedReimbursement.getId()>0)
+    	   if(unprocessedReimbursement.getId()==0)
+    	   {	 throw new Exception(" reimbursement not found"); }
+    		   
     	   if(unprocessedReimbursement.getStatus().equals(Status.PENDING))
     	   
-    	   return DAO.update(unprocessedReimbursement).get();
-    	return null;
-            //else  throw new SQLException("");
+    	   {
+    		   Optional<Reimbursement> reimb=this.reimbDao.update(unprocessedReimbursement);
+    		   if(reimb.isPresent())  
+    		   { return reimb; }
+    		   else { throw new Exception("unsuccessful update");}
+    	   }
+    	   
+    	    return Optional.ofNullable(null);
+           
     	
     	
     }
@@ -70,9 +95,16 @@ public class ReimbursementService {
     /**
      * Should retrieve all reimbursements with the correct status.
      */
-    public List<Reimbursement> getReimbursementsByStatus(Status status) {
+    @Override
+	public List<Reimbursement> getReimbursementsByStatus(Status status) {
     	
-    return	  DAO.getByStatus(status);
+    return	 this.reimbDao.getBystatus(status);
         
     }
+
+	@Override
+	public Optional<Reimbursement> getById(int id) {
+		// TODO Auto-generated method stub
+		return this.reimbDao.getById(id);
+	}
 }

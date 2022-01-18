@@ -2,6 +2,8 @@ package com.revature.services;
 
 import com.revature.exceptions.RegistrationUnsuccessfulException;
 import com.revature.models.User;
+import com.revature.repositories.AuthDAO;
+import com.revature.repositories.IUserDAO;
 import com.revature.repositories.UserDAO;
 
 import java.util.List;
@@ -24,7 +26,7 @@ public class AuthService {
 	
 	
 	
-	UserDAO DAO=new UserDAO();
+	AuthDAO DAO=new AuthDAO();
 	static User loggedinUser =null;
 
     /**
@@ -37,9 +39,11 @@ public class AuthService {
      * </ul>
      * @throws Exception 
      */
-    public User login(String username, String password) throws Exception {
+    public boolean login(String username, String password) throws Exception {
     	
-    List<User> lst=DAO.getUsers();
+    	return DAO.login(username, password);
+    	
+    /*List<User> lst=DAO.getUsers();
     //User foundUser=null;
     boolean found=false;
     for(User  u :lst)
@@ -55,7 +59,7 @@ public class AuthService {
     	
     }
     if(!found) throw new Exception(" user not found");
-        return null;
+        return null;*/
     }
 
     /**
@@ -72,7 +76,9 @@ public class AuthService {
      * After registration, the id will be a positive integer.
      */
     public User register(User userToBeRegistered) throws RegistrationUnsuccessfulException {
-    	 List<User> lst=DAO.getUsers();
+    	UserDAO DAO=new UserDAO();
+    	
+    	List<User> lst=DAO.getUsers();
     	    //User foundUser=null;
     	 String email=userToBeRegistered.getEmail();
     	 String username=userToBeRegistered.getEmail();

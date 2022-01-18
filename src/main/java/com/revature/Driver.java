@@ -1,19 +1,34 @@
 package com.revature;
 
+//import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+//import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+//import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.management.remote.JMXConnectionNotification;
+
+import com.revature.repositories.AuthDAO;
 import com.revature.repositories.ReimbursementDAO;
 import com.revature.repositories.UserDAO;
 import com.revature.services.AuthService;
+import com.revature.services.ReimbursementService;
 import com.revature.util.ConnectionFactory;
 
 import io.javalin.Javalin;
 
+import com.revature.controllers.AuthController;
 import com.revature.controllers.ReimbursementController;
 import com.revature.controllers.UserController;
 import com.revature.exceptions.UsernameNotUniqueException;
@@ -27,7 +42,7 @@ public class Driver {
 	public static void main(String[] args) {
     	
     	Role ro=Role.EMPLOYEE;
-    	User us=new User(1,"","",ro);
+    	//User us=new User(1,"","",ro);
     	
     	try(Connection conn = ConnectionFactory.getConnection()){
 			System.out.println("Connection Successful :)");
@@ -35,10 +50,23 @@ public class Driver {
 			System.out.println("Connection failed");
 			e.printStackTrace();
 		}
-    	 Menu m=new Menu();
-       User u=	m.login();//register();
-       System.out.println(u);
-    	/*UserController  cec=new UserController();
+    	
+    	
+    	//Status er=Status.values()[0];
+    	//System.out.println(er );
+    	//Optional<Reimbursement>  reim=getreimb(1);
+    	// System.out.println(getBystatus(Status.APPROVED).get(0));
+    	
+    	//System.out.println(update(reim.get()).get());
+    	
+    	UserDAO o=new UserDAO();
+    	//System.out.println(o.getUserById(5));//o.getByUsername("hassanm"));
+   // Optional<User> u=	o.create(new User(0,"gen1","pwd1",Role.EMPLOYEE));
+   // System.out.println(u);
+    	 //Menu m=new Menu();
+     //  User u=	m.login();//register();
+      // System.out.println(u);
+    	UserController  cec=new UserController();
     	 // IMPLEMENT JAVALIN HERE
         Javalin app = Javalin.create(config -> {
             config.enableCorsForAllOrigins();
@@ -55,18 +83,63 @@ public class Driver {
        ReimbursementController rec=new ReimbursementController();
         app.get("/reimbursement", rec.getAllHandler);
         app.get("/reimbursement/{e_id}", rec.getByIdHandler);
-    	//Menu  men=new Menu();  
-    	//men.displayMenu();
-        ReimbursementDAO  o=new ReimbursementDAO();
-        Optional<Reimbursement> r=o.getById(4);
-      //  User u= new User( 1,"kop","123",Role.EMPLOYEE);
-       //   int id, String username, String password, Role role)
-        //System.out.println(r.get());
+        app.post("/reimbursement/stat", rec.getByStatusHandler);
+        app.post("/apply", rec.applyHandler);
+        app.put("/reimbursement/update",rec.UpdateHandler);
+       
+
         
-        UserDAO d=new UserDAO();
-      //  System.out.println(d.getUserById(2).get().getUsername());
-       */
+        //athenticate
+        AuthController au=new AuthController();
+    	app.post("/login",au.loginHandler);
+    	app.post("/register",au.registerHandler);
+    	
+    	////////////////////testing date////////////////////
+    	
+    	
+       /* AuthDAO d=new AuthDAO();
+      System.out.println(d.login("hassanm","123"));
+       UserDAO ud=new UserDAO();
+     //  ud.getUserById(0);*/
+      ReimbursementDAO res=new ReimbursementDAO();
+  //List<Reimbursement> lr=  res.getReimbursements();
+    //Reimbursement r=lr.get(6);
+    
+    //  res.update(r);
+  
+   //System.out.println(lr.get(6));
+    //insertWithJavaTimeAPI();
+    //getResultSetWithJavaSqlAPI() ;
+       
     }
+private static void  createreimb()
+{
+	ReimbursementDAO res=new ReimbursementDAO();
+	LocalDateTime dt= LocalDateTime.now();//(System.currentTimeMillis());
+	//Reimbursement reimb=new Reimbursement(0,Status.PENDING,new User(2,"hassanm","123",Role.EMPLOYEE),null,198.00 );
+    Optional<Reimbursement> resm=res.create(298.00,dt ,"travel to Tx",2,1,1);
+    System.out.println(resm);
+}
+private static Optional<Reimbursement>  getreimb(int id)
+{
+	ReimbursementDAO res=new ReimbursementDAO();
+	Optional<Reimbursement> resm=res.getById(id);//.create(298.00,dt ,"travel to NJ",2,1,1);
+    return resm;
+}
+
+private static Optional<Reimbursement>  update(Reimbursement unprocessedReimbursement)
+{
+	ReimbursementDAO res=new ReimbursementDAO();
+	 Optional<Reimbursement> resm=res.update(unprocessedReimbursement);//.getById(id);//.create(298.00,dt ,"travel to NJ",2,1,1);
+    return resm;
+}
+private static List<Reimbursement>  getBystatus(Status s)
+{
+	ReimbursementDAO res=new ReimbursementDAO();
+	 List<Reimbursement> resm=res.getBystatus(s);//update(unprocessedReimbursement);//.getById(id);//.create(298.00,dt ,"travel to NJ",2,1,1);
+    return resm;
+}
+
 
 	/*private static void login() {
 		System.out.println("Please log in");

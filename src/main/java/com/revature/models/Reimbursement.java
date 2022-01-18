@@ -1,7 +1,7 @@
 package com.revature.models;
 
 import java.awt.Image;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  * This concrete Reimbursement class can include additional fields that can be used for
@@ -10,8 +10,8 @@ import java.sql.Date;
  * Example fields:
  * <ul>
  *     <li>Description</li>
- *     <li>Creation Date</li>
- *     <li>Resolution Date</li>
+ *     <li>Creation LocalDateTime</li>
+ *     <li>Resolution LocalDateTime</li>
  *     <li>Receipt Image</li>
  *      <li>Reimb_type ReimbType</li>
  * </ul>
@@ -19,8 +19,8 @@ import java.sql.Date;
  */
 public class Reimbursement extends AbstractReimbursement {
 	private String  description;
-	private  Date  creation ;
-	private  Date  resolution ;
+	private  LocalDateTime  creation ;
+	private  LocalDateTime  resolution ;
 	private  Image receipt ;
 	private  ReimbType reimb_type; ;
 
@@ -28,7 +28,8 @@ public class Reimbursement extends AbstractReimbursement {
 //new Reimbursement(2, Status.PENDING, GENERIC_EMPLOYEE_1, null, 150.00);
     public Reimbursement()
     {super();}
-    public Reimbursement(int id, Status status, User author,User resolver, double amount) {
+    public Reimbursement(int id, Status status,
+    		User author,User resolver, double amount) {
         super(id,status,author,resolver,amount);
     }
 
@@ -38,7 +39,7 @@ public class Reimbursement extends AbstractReimbursement {
      */
     public Reimbursement(int id, Status status, User author, User resolver,
     		double amount,ReimbType reimb_type ,String description,
-    		Date creation,Date resolution, Image receipt) {
+    		LocalDateTime creation,LocalDateTime resolution, Image receipt) {
         super(id, status, author, resolver, amount);
         this.creation=creation;
         this.resolution=resolution;
@@ -55,19 +56,19 @@ public class Reimbursement extends AbstractReimbursement {
 		this.description = description;
 	}
 
-	public Date getCreation() {
+	public LocalDateTime getCreation() {
 		return creation;
 	}
 
-	public void setCreation(Date creation) {
+	public void setCreation(LocalDateTime creation) {
 		this.creation = creation;
 	}
 
-	public Date getResolution() {
+	public LocalDateTime getResolution() {
 		return resolution;
 	}
 
-	public void setResolution(Date resolution) {
+	public void setResolution(LocalDateTime resolution) {
 		this.resolution = resolution;
 	}
 
@@ -83,7 +84,7 @@ public class Reimbursement extends AbstractReimbursement {
 	public String toString() {
 		
 		
-		return "AbstractReimbursement{" +
+		return "Reimbursement{" +
                 "id=" + super.getId() +
                 ", status=" + super.getStatus() +
                 ", author=" + super.getAuthor()+
