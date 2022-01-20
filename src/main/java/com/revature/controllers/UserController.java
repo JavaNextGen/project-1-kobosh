@@ -17,7 +17,7 @@ public class UserController {
 		IUserDAO ces = new UserDAO();
 		
 		public Handler getEmployeeUpdateHandler = (ctx)-> {
-			System.out.println("callin update handler");
+			//System.out.println("callin update handler");
 			  if(ctx.req.getSession() != null) {
 				  
 				  String body = ctx.body();
@@ -25,7 +25,7 @@ public class UserController {
 			        Gson gson = new Gson();
 try {
 			        User employee = gson.fromJson(body, User.class);
-System.out.println(employee);
+//System.out.println(employee);
 	             Optional<User> allEmployees = ces.update(employee);//.getAllChallengeEmployees();
 	              // Gson gson1 = new Gson();
 	               String JSONEmployees = gson.toJson(allEmployees);
@@ -39,8 +39,8 @@ System.out.println(employee);
 		};
 		
 		
-		public Handler getEmployeeByIdHandler = (ctx)-> {
-			System.out.println("calling usercontroller  handler");
+		public Handler getEmployeeByIdHandler = (ctx)-> {			
+			//System.out.println("calling usercontroller  handler");
 			String e_id=ctx.pathParam("e_id");
 			  if(ctx.req.getSession() != null) {
 	           Optional<  User > allEmployees = ces.getUserById(Integer.parseInt (e_id));//.getAllChallengeEmployees();
@@ -54,6 +54,7 @@ System.out.println(employee);
 	               ctx.status(404);
 	           }
 		};
+		
 		public Handler deleteEmployeeHandler = (ctx)-> {
 			String e_id=ctx.pathParam("e_id");
 			//System.out.println(e_id[0]);
@@ -104,6 +105,26 @@ public Handler insertEmployeeHandler = (ctx) -> {
         ctx.result("You are the weakest link. Goodbye!!!!");
         ctx.status(404);
     }
-}
-;}
+};
 
+public Handler getEmployeeByNameHandler= (ctx)-> 
+{
+
+	
+	  if(ctx.req.getSession() != null)
+	  {
+		  System.out.println("by name");
+		  String name=ctx.pathParam("name"); 
+	  
+       Optional<  User > employee = ces.getByUsername(name);//.getAllChallengeEmployees();
+           Gson gson = new Gson();
+           String JSONEmployee = gson.toJson(employee);
+           ctx.result(JSONEmployee);
+           ctx.status(200);
+
+       } else {
+           ctx.result("Failed to reletive employees");
+           ctx.status(404);}
+       };
+
+}

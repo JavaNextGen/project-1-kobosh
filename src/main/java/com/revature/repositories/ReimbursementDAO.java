@@ -151,32 +151,8 @@ public class ReimbursementDAO implements IReimbursementDAO {
     		//reimb_id ,amount, submitted,resolved,description,author,receipt ,resolver,status,reimb_type
     		while(rs.next())
     		{
-    			//int id, Status status, User author, User resolver, double amount
-    			int reid=rs.getInt("reimb_id");
-    			double ramount=rs.getInt("reimb_amount");
-    			
-    			
-    		Optional<User> rauthor=  usrv.getUserById(  rs.getInt("author"));
-    		User  oth=null;
-    		if(rauthor.isPresent())
-			 {     oth=rauthor.get();   }
-    		    int resol=rs.getInt(  "resolver");
-    			 Optional<User> resolver=  usrv.getUserById(resol);
-    			 User re=null;
-    			
-    			  if(resolver.isPresent())
-    			 {     re=resolver.get();    }
-    			 else {re=null;}
-    			 int rstatus=   rs.getInt("reimb_status");
-    			 Status r_status=Status.values()[--rstatus];//.PENDING;
-    			 
-    			 
-    			 int reimb_type=   rs.getInt("reimb_type");
-    			 ReimbType retype=ReimbType.values()[--reimb_type];//.TRAVEL;
-    			
-     			
-    			 reimb=new Reimbursement(reid, r_status,oth,re,ramount);
-    			 reimbList.add(reimb);
+    			reimb = getReimbursement(rs, usrv);
+   			 		 reimbList.add(reimb);
     		}
     		
     		return   reimbList;
@@ -255,48 +231,7 @@ public class ReimbursementDAO implements IReimbursementDAO {
     		//reimb_id ,amount, submitted,resolved,description,author,receipt ,resolver,status,reimb_type
     		while(rs.next())
     		{
-    			//int id, Status status, User author, User resolver, double amount
-    			int reid=rs.getInt("reimb_id");
-    			double ramount=rs.getInt("reimb_amount");
-    			
-    			LocalDateTime submitted=rs.getObject("submitted",LocalDateTime.class);
-    			System.out.println(submitted);		
-    					//.getLocalTime("submitted").;
-    			LocalDateTime resolved=rs.getObject("resolved",LocalDateTime.class);
-    			String description=rs.getString("description");
-    		User	 rauthor= usrv.getUserById(  rs.getInt("author")).get();
-    		    int res=rs.getInt(  "resolver");
-    		    
-    			 Optional<User> resolver=  usrv.getUserById(res);
-    			 int rstatus=   rs.getInt("reimb_status");
-    			 Status r_status=Status.PENDING;
-    			 switch(rstatus)
-    			 {
-    			 case 2: r_status=   Status.APPROVED;  break;
-    			 case 3:  r_status=Status.DENIED; break;
-    			 
-    			    			 
-    			 }
-    			 
-    			 int reimb_type= rs.getInt("reimb_type");
-    			 ReimbType retype=ReimbType.TRAVEL;
-    			 if(reimb_type==2) retype=ReimbType.CERTIFICATION;
-    			 User oth=rauthor;
-    			 User re= null;
-    			 if(resolver.isPresent())
-    			 {     re=resolver.get();      }
-     				Image im=null;	
-    			/*
-    			 int id, Status status, User author, User resolver,
-    		double amount,ReimbType reimb_type ,String description,
-    		LocalTime creation,LocalTime resolution, Image receipt
-    			 */
-     				
-    			 reimb=new Reimbursement(reid, r_status,oth,re, ramount,
-    					 retype,
-    					 description,
-    					 submitted,
-    					 resolved,null);
+    			reimb = getReimbursement(rs, usrv);
     			 remList.add(reimb);
     			
     		}
@@ -305,6 +240,52 @@ public class ReimbursementDAO implements IReimbursementDAO {
     	}catch(SQLException  e) { e.printStackTrace();};
     	
        return null;
+	}
+	private Reimbursement getReimbursement(ResultSet rs, IUserService usrv) throws SQLException {
+		Reimbursement reimb;
+		//int id, Status status, User author, User resolver, double amount
+		int reid=rs.getInt("reimb_id");
+		double ramount=rs.getInt("reimb_amount");
+		
+		LocalDateTime submitted=rs.getObject("submitted",LocalDateTime.class);
+		System.out.println(submitted);		
+				//.getLocalTime("submitted").;
+		LocalDateTime resolved=rs.getObject("resolved",LocalDateTime.class);
+		String description=rs.getString("description");
+ 		User	 rauthor= usrv.getUserById(  rs.getInt("author")).get();
+		int res=rs.getInt(  "resolver");
+		
+		 Optional<User> resolver=  usrv.getUserById(res);
+		 int rstatus=   rs.getInt("reimb_status");
+		 Status r_status=Status.values()[--rstatus];//.PENDING;
+		/* switch(rstatus)
+		 {
+		 case 2: r_status=   Status.APPROVED;  break;
+		 case 3:  r_status=Status.DENIED; break;
+		 
+		    			 
+		 }*/
+		 
+		 int reimb_type= rs.getInt("reimb_type");
+		 ReimbType retype=ReimbType.values()[--reimb_type];//.TRAVEL;
+		 //if(reimb_type==2) retype=ReimbType.CERTIFICATION;
+		 User oth=rauthor;
+		 User re= null;
+		 if(resolver.isPresent())
+		 {     re=resolver.get();      }
+			Image im=null;	
+		/*
+		 int id, Status status, User author, User resolver,
+ 		double amount,ReimbType reimb_type ,String description,
+ 		LocalTime creation,LocalTime resolution, Image receipt
+		 */
+			
+		 reimb=new Reimbursement(reid, r_status,oth,re, ramount,
+				 retype,
+				 description,
+				 submitted,
+				 resolved,null);
+		return reimb;
 	}
 	
 	@Override

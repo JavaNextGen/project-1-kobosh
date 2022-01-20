@@ -79,7 +79,7 @@ public  Optional< User> getUserById(int id){ //This will use SQL SELECT function
 			//write the query that we want to send to the database, and assign it to a String
 			String sql ="select * from ers_users  where user_id = ?;"
 					;// "SELECT user_name FROM ers_users  where user_id=?;";
-			PreparedStatement pst=conn.prepareStatement(sql);
+			PreparedStatement pst=conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			
 			//Put the SQL query into a Statement object (The Connection object has a method for this!!)
 			pst.setInt(1, id);
@@ -88,23 +88,7 @@ public  Optional< User> getUserById(int id){ //This will use SQL SELECT function
 rs=pst.executeQuery();
 		if(rs.next())
 				{
-				//int ud=rs.getInt("user_id");
-					int rd=rs.getInt("role_id");
-						Role ro=Role.values()[--rd];//).EMPLOYEE;
-						
-						
-						String	unm=rs.getString("user_name");
-						//System.out.println("user name " + unm);
-						//}catch(Exception e) {System.out.println(e.getMessage());};
-					
-
-						
-						String	email=rs.getString("email");
-					String	fname=rs.getString("fname");
-					String	lname=rs.getString("lname");
-					String	pwd=rs.getString("user_password");
-						User user=new User(id,unm,pwd,ro);//fname,lname,email,ro);
-					return Optional.of(user);
+				return getUser(rs);
 					
 				}
 				}catch(SQLException e) {
@@ -117,6 +101,22 @@ rs=pst.executeQuery();
 			
 			return Optional.empty();
 		}
+
+private Optional<User> getUser(ResultSet rs) throws SQLException {
+	int ud=rs.getInt("user_id");
+		int rd=rs.getInt("role_id");
+			Role ro=Role.values()[--rd];//).EMPLOYEE;
+			
+			
+			String	unm=rs.getString("user_name");
+								
+			String	email=rs.getString("email");
+		String	fname=rs.getString("fname");
+		String	lname=rs.getString("lname");
+		String	pwd=rs.getString("user_password");
+			User user=new User(ud,unm,pwd,fname,lname,email,ro);
+		return Optional.of(user);
+}
 
 @Override
 public Optional< User>  getByUsername(String uname) 
@@ -133,18 +133,8 @@ rs=pst.executeQuery();
 User user=null;
 	if(rs.next())
 			{
-			int ud=rs.getInt("user_id");
-				int rd=rs.getInt("role_id");
-				
-					Role ro=  Role.values()[rd++]; // EMPLOYEE;
-					//if(rd==2)
-						//ro=Role.FINANCE_MANAGER;
-					String	unm=null;
-					
-					unm=rs.getString("user_name");
-					
-				String	pwd=rs.getString("user_password");
-					 user=new User(ud,unm,pwd,ro);//fname,lname,email,ro);
+			
+		user=getUser(rs).get();
 					
 			}
 	
@@ -152,7 +142,7 @@ User user=null;
 	
 			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
 			
-	  return Optional.ofNullable(null);
+	  return Optional.empty();//.ofNullable(null);
 	}
 	@Override
 	public List<User> getUsers(){ //This will use SQL SELECT functionality
@@ -180,24 +170,8 @@ User user=null;
 			
 			//while there are results in the resultset...
 			while(rs.next()) {
-				int r=rs.getInt("role_id");
 				
-				Role o=Role.EMPLOYEE;
-				if(r==2)
-					o=Role.FINANCE_MANAGER;
-				
-				//Use the all args constructor to create a new Employee object from each returned row from the DB
-				User e = new User(	rs.getInt("user_id"),
-						//we want to use rs.get for each column in the record
-						
-						rs.getString("user_name"),
-						rs.getString("user_password"),
-						rs.getString("fname"),
-						rs.getString("lname"),
-						rs.getString("email"),
-											
-						o
-						);
+				User e=getUser(rs).get();
 				
 				//and populate the ArrayList with each new Employee object
 				employeeList.add(e); //e is the new Employee object we created above
@@ -268,109 +242,8 @@ public Optional<User> create(  User newUser)
 	return Optional.empty();	
 }
 
-/*public User login(String unm, String pwd) {
-	
-	try(Connection conn = ConnectionFactory.getConnection())
-	{ //all of my SQL stuff will be within this try block
-		
-		//Initialize an empty ResultSet object that will store the results of our SQL query
-		ResultSet rs = null;
-		
-		//write the query that we want to send to the database, and assign it to a String
-		String sql ="select * from ers_users  where user_name = ?  and  user_password=?;"
-				;// "SELECT user_name FROM ers_users  where user_id=?;";
-		PreparedStatement pst=conn.prepareStatement(sql);
-		
-		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
-		pst.setString(1, unm);
-		pst.setString(2, pwd);
-		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
-		//The Statement object has a method that takes Strings to execute as a SQL query
-rs=pst.executeQuery();
-User user=null;
-	while(rs.next())
-			{
-			int ud=rs.getInt("user_id");
-				int rd=rs.getInt("role_id");
-					Role ro=Role.EMPLOYEE;
-					if(rd==2)
-						ro=Role.FINANCE_MANAGER;
-					String	um=null;
-					try {
-					um=rs.getString("user_name");
-					System.out.println("user name " + unm);
-					}catch(Exception e) {System.out.println(e.getMessage());};
-				
-				String	email=rs.getString("email");
-				String	fname=rs.getString("fname");
-				String	lname=rs.getString("lname");
-				String	wd=rs.getString("user_password");
-					user=new User(ud,um,wd,fname,lname,email,ro);
-					
-				return user;	
-			}
-	System.out.println("no such user try again");
-	return  null;
-			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
-		
-		
-		
-	
-	
-	
-	// TODO Auto-generated method stub
-	return null;
-}
 
-public Optional<User> register(String unm, String pwd, String fnm, String lnm, String email, int role) {
-	// TODO Auto-generated method stub
-	try(Connection conn = ConnectionFactory.getConnection())
-	{ //all of my SQL stuff will be within this try block
-		
-		//Initialize an empty ResultSet object that will store the results of our SQL query
-		ResultSet rs = null;
-		
-		//write the query that we want to send to the database, and assign it to a String
-		String sql ="INSERT INTO  ers_users( user_name,user_password,fname,lname,email,role_id)" +
-		    " VALUES(?,?,?,?,?,?);"
-				;// "SELECT user_name FROM ers_users  where user_id=?;";
-		PreparedStatement pst=conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-		
-		//Put the SQL query into a Statement object (The Connection object has a method for this!!)
-		pst.setString(1, unm);
-		pst.setString(2, pwd);
-		pst.setString(3, fnm);
-		pst.setString(4, lnm);
-		pst.setString(5, email);
-		pst.setInt(6, role);
-		//EXECUTE THE QUERY, by putting the results of the query into our ResultSet object
-		//The Statement object has a method that takes Strings to execute as a SQL query
-        pst.executeUpdate();
-System.out.println("registered successfully ! login please");
-try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
-    if (generatedKeys.next()) {
-        int id=generatedKeys.getInt(1);
-        
-      Optional<  User> usr= getUserById(id);
-        return usr;
-    }
-}catch(Exception e) {
-        //throw new SQLException("Creating user failed, no ID obtained.");
-    }
-	System.out.println("no such user try again");
-	return  null;
-			}catch(SQLException e) {System.out.println("error !!?");e.printStackTrace();};
-		
-		
-		
-	
-	
-	
-	// TODO Auto-generated method stub
-	return null;
 
-	
-}*/
 
 @Override
 public boolean deleteUser(int userId) {

@@ -74,10 +74,11 @@ public class Driver {
         //employee api
        
       app.get("/employee/{e_id}", cec.getEmployeeByIdHandler);
-       app.get("/employee", cec.getEmployeeHandler);
-        app.post("/employee", cec.insertEmployeeHandler);
-        app.put("/employee/update", cec.getEmployeeUpdateHandler);
-        app.delete("/employee/{e_id}", cec.deleteEmployeeHandler);
+       //app.get("/employee", cec.getEmployeeHandler);
+       app.get("/employee/name/{name}", cec.getEmployeeByNameHandler);
+       // app.post("/employee", cec.insertEmployeeHandler);
+        //app.put("/employee/update", cec.getEmployeeUpdateHandler);
+        //app.delete("/employee/{e_id}", cec.deleteEmployeeHandler);
         
         //reimbursement api
        ReimbursementController rec=new ReimbursementController();
